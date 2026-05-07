@@ -1,0 +1,92 @@
+# Kickoff — {slug} alpha-reader pipeline
+
+**Date:** {created_date}
+**Pen name:** {pen_name}
+**Book:** {title}
+**Genre:** {genre}
+**Status:** SCAFFOLD COMPLETE — awaiting your authorization to fire
+
+---
+
+## What this is
+
+An alpha-reader project that runs the v0.4 methodology against a complete (or partial) novel using one or more of the 9 anti-sycophancy-retrofitted v0.4 personas.
+
+Default workflow: single-persona Pass A (clean read). Optional: add Pass B (V2 vs V1 comparison read) if a prior-draft + prior alpha-reader response are available.
+
+## Anti-sycophancy stack (active)
+
+10 universal v0.4 bindings (rating discipline, no hedging, DNF honesty, no conversion arcs, no closing-summary warmth, forced negative generation Q0, mandatory 1-star Q9, comp-anchor strict ranking, Goodreads distribution prediction, authority-relationship inversion).
+
+If Pass B fires: 11th binding adds (no improvement-narrative arcs).
+
+Reflexive Opus 4.7 self-critique pass on every persona response identifies sycophancy artifacts and emits calibrated rating + keep-reading estimates (appended to response file as supplementary signal).
+
+## Pipeline architecture
+
+```
+{slug}/
+├── CLAUDE.md                          # hard-isolation declaration + provenance
+├── book_config.yaml                   # load-bearing — orchestrator reads from this
+├── .env                               # Anthropic API key (gitignored)
+├── manuscript/
+│   └── {manuscript_filename}          # main manuscript (chapter markers normalized)
+├── references/
+│   ├── personas-snapshot-v0.4.md      # 9-persona reference (toolkit-canonical copy)
+│   └── readability-snapshot.md        # textstat metrics panel + persona-prompt block
+├── orchestrator/
+│   ├── run-alpha-reader.py            # toolkit-canonical orchestrator
+│   ├── readability_analyzer.py        # toolkit-canonical analyzer
+│   └── auth_probe.py                  # toolkit-canonical auth probe
+├── kickoffs/
+│   └── {created_date}-alpha-reader.md # this file
+└── runs/                              # populated on first fire
+    ├── alpha-reader-pass-a-clean/     # Pass A output
+    └── alpha-reader-pass-b-comparison/ # Pass B output (if Pass B fires)
+```
+
+## How to fire
+
+**Default (single-persona Pass A):**
+
+```bash
+cd <project-dir>
+python orchestrator/auth_probe.py
+python orchestrator/run-alpha-reader.py --pass a --persona {default_persona} --dry-run
+# review prompt sample, then fire:
+python orchestrator/run-alpha-reader.py --pass a --persona {default_persona}
+```
+
+Expected duration: ~3-6 minutes per persona (Sonnet stream + Opus reflexive)
+Expected cost: ~$1.20-1.70 per persona (Sonnet) + $0.30 reflexive Opus
+
+**Multi-persona fire** (any subset of marisol-the-whale, tessa-booktok, nadia-dark-fantasy, aaliyah-romantasy, brittany-erotica, kayla-hockey, sienna-fae-court, veronica-the-hatchet, emma-the-surgeon):
+
+```bash
+for p in kayla-hockey brittany-erotica veronica-the-hatchet; do
+  python orchestrator/run-alpha-reader.py --pass a --persona $p
+done
+```
+
+## Pre-fire checklist
+
+- [ ] Manuscript path verified: `manuscript/{manuscript_filename}` (chapter markers normalized)
+- [ ] book_config.yaml verified (book.title, book.pen_name, book.genre_hint, book.is_complete, cost_cap_usd)
+- [ ] Personas snapshot verified: `references/personas-snapshot-v0.4.md` (9 personas)
+- [ ] Readability snapshot generated: `references/readability-snapshot.md`
+- [ ] .env contains your real direct Anthropic API key
+- [ ] auth_probe passes
+- [ ] Cost cap acknowledged: ${cost_cap}/pass binding
+- [ ] Persona selection decided
+
+## Post-fire deliverables
+
+For each pass, each persona:
+- `runs/alpha-reader-pass-{{a,b}}/responses/<persona-id>-response.md` — persona's structured rubric response + reflexive Opus self-critique appended
+- `runs/.../_run-report.md` — telemetry, cost, status
+- `runs/.../_state.yaml` — atomic state for resume
+- `runs/.../_status.json` — JSON-serialized state
+
+---
+
+*Replace this last section with your own decision-making notes when you're ready to fire.*

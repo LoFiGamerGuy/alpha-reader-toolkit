@@ -1,0 +1,15 @@
+# Secrets
+.env
+
+# Run artifacts (sensitive: may contain critique of unpublished manuscript)
+runs/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db

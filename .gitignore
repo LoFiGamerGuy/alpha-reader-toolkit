@@ -1,0 +1,33 @@
+# Local environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor folders
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Defensive: the toolkit is the methodology and orchestrator; manuscript
+# content and run outputs should live in your per-book project directory,
+# not in this repo. These ignores prevent accidental check-in.
+manuscript/
+runs/
+splinter-*/
+*-splinter/

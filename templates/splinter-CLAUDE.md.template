@@ -1,0 +1,83 @@
+# {slug} — Project-Specific Configuration
+
+> Project-scoped configuration for an alpha-reader project. If you're using
+> Claude Code, your global persona will load from `~/.claude/CLAUDE.md`.
+> Toolkit canonical docs at the alpha-reader-toolkit repo. This file
+> specifies project-scoped settings only.
+
+## Project identity
+
+- **Project class:** Alpha-reader project — single-purpose, isolated pipeline for one manuscript
+- **Created:** {created_date}
+- **Pen name:** {pen_name}
+- **Book:** {title}
+- **Genre:** {genre}
+- **Status:** {complete_status}
+- **Scaffolded by:** the alpha-reader-toolkit's `new-splinter.py`
+
+## Hard isolation (binding)
+
+This project is its own boundary. It does NOT touch, reference at runtime, or output to other alpha-reader projects.
+
+- Lives at its own directory and ONLY there
+- Pre-existing references inside this project to source artifacts (orchestrator, persona doc, FK script) are SCAFFOLD-TIME-ONLY snapshots from the toolkit; no runtime live-reference
+
+## Pipeline status
+
+- **Orchestrator:** `orchestrator/run-alpha-reader.py` (toolkit-canonical; reads `book_config.yaml`)
+- **Readability analyzer:** `orchestrator/readability_analyzer.py` (textstat metrics panel)
+- **Auth probe:** `orchestrator/auth_probe.py` (verifies API key works pre-fire)
+- **Personas:** `references/personas-snapshot-v0.4.md` (9 personas; all v0.4 anti-sycophancy retrofitted)
+- **Manuscript:** `manuscript/{manuscript_filename}` (chapter markers normalized to `# Chapter N`)
+- **Book config:** `book_config.yaml` (load-bearing — orchestrator reads from this)
+- **Readability snapshot:** `references/readability-snapshot.md` (reference + persona-prompt block)
+- **Kickoff:** `kickoffs/{created_date}-alpha-reader.md`
+
+## Cost discipline
+
+- Cost cap (binding): **${cost_cap} per pass**
+- Per-persona cost halt: $5.00
+- Default model: `claude-sonnet-4-6` for personas; `claude-opus-4-7` for reflexive self-critique (and adversarial personas)
+
+## How to run
+
+Pre-fire (verify API key + dry-run prompt sample):
+```bash
+cd <project-dir>
+python orchestrator/auth_probe.py
+python orchestrator/run-alpha-reader.py --pass a --persona {default_persona} --dry-run
+```
+
+Fire Pass A (clean read):
+```bash
+python orchestrator/run-alpha-reader.py --pass a --persona {default_persona}
+```
+
+Fire Pass B (V2 vs V1 comparison; requires `pass_b` section in book_config.yaml + v1 reference files):
+```bash
+python orchestrator/run-alpha-reader.py --pass b --persona {default_persona}
+```
+
+Run any of the 9 v0.4 personas:
+```bash
+python orchestrator/run-alpha-reader.py --pass a --persona <persona-id>
+```
+
+Available persona IDs (see `references/personas-snapshot-v0.4.md` for profiles):
+marisol-the-whale, tessa-booktok, nadia-dark-fantasy, aaliyah-romantasy, brittany-erotica, kayla-hockey, sienna-fae-court, veronica-the-hatchet, emma-the-surgeon
+
+## Hard rules
+
+- Do NOT modify `orchestrator/*.py` files in this project — they are toolkit-canonical copies; updates flow from the alpha-reader-toolkit. To re-sync, re-run the toolkit's install script.
+- Do NOT modify `references/personas-snapshot-v0.4.md` in this project — same reason.
+- `book_config.yaml` IS project-local — edit freely.
+- `.env` is gitignored; contains your direct Anthropic API key.
+- Python 3.10+ required (uses modern type hints). Recommended: 3.12+.
+
+## Re-entry
+
+Session-start checklist for future sessions in this directory:
+1. Read this CLAUDE.md
+2. Skim `kickoffs/{created_date}-alpha-reader.md` for kickoff status
+3. Check `runs/alpha-reader-pass-a-clean/_status.json` and `runs/alpha-reader-pass-b-comparison/_status.json` for pass state
+4. If a pass is incomplete and you're authorized to resume: `python orchestrator/run-alpha-reader.py --pass {{a,b}} --persona <id> --resume`
