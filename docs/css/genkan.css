@@ -1,0 +1,480 @@
+/* ============================================================
+   GENKAN — soul-material software surfaces
+   The entry zone between outside and inside. Soul palette and
+   type, applied to product UI with cockpit structural discipline.
+
+   Activate the register on <html> or any container:
+     <html data-register="genkan">                   light (default)
+     <html data-register="genkan" data-mode="dark">  dark variant
+
+   This file consumes tokens via aliases. Every product primitive
+   below — buttons, fields, cards, nav, badges — is meant to be
+   composed, not extended. If you need a new primitive, add it
+   here so every genkan artifact picks it up.
+
+   Components:
+     .gk-shell                 page shell (header / main / footer)
+     .gk-nav                   top navigation bar
+     .gk-hero                  marketing hero section
+     .gk-section               vertical-rhythm section wrapper
+     .gk-card                  product card surface
+     .gk-feature               feature trio item
+     .gk-cta                   primary call-to-action button
+     .gk-cta--ghost            secondary, hairline
+     .gk-field                 labelled form field
+     .gk-input / .gk-select / .gk-textarea
+     .gk-badge / .gk-pip       small status objects
+     .gk-tabs / .gk-tab        in-product tab bar
+     .gk-table                 dense data table (genkan flavour)
+     .gk-empty                 empty state composition
+   ============================================================ */
+
+@import url('base.css');
+
+[data-register="genkan"] {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* ── Shell ─────────────────────────────────────────────── */
+.gk-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.gk-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-7);
+}
+.gk-container--narrow { max-width: 880px; }
+.gk-container--wide   { max-width: 1440px; }
+
+/* ── Navigation ───────────────────────────────────────── */
+.gk-nav {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in oklab, var(--bg) 92%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule-faint, var(--rule));
+}
+.gk-nav__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  gap: var(--space-6);
+}
+.gk-nav__brand {
+  display: flex; align-items: baseline; gap: var(--space-2);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--fs-md);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg);
+}
+.gk-nav__brand .glyph {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  font-style: normal;
+  letter-spacing: var(--tracking-caps);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 2px 6px;
+}
+.gk-nav__menu {
+  display: flex; align-items: center; gap: var(--space-6);
+}
+.gk-nav__link {
+  font-size: var(--fs-sm);
+  color: var(--fg-2);
+  letter-spacing: var(--tracking-tight);
+  transition: color var(--dur-fast) var(--ease);
+}
+.gk-nav__link:hover { color: var(--fg); }
+.gk-nav__link[aria-current="page"] { color: var(--fg); }
+.gk-nav__link[aria-current="page"]::after {
+  content: ""; display: block;
+  height: 1px; margin-top: 4px;
+  background: var(--accent);
+}
+
+/* ── Section / vertical rhythm ──────────────────────────── */
+.gk-section { padding: var(--space-10) 0; }
+.gk-section--tight { padding: var(--space-8) 0; }
+.gk-section--bleed-2 { background: var(--bg-2); }
+.gk-section--bleed-3 { background: var(--bg-3); }
+.gk-section__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: var(--space-7);
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--rule);
+}
+.gk-section__num {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.gk-section__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(36px, 5vw, var(--fs-3xl));
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg);
+}
+.gk-section__title em { font-style: italic; font-weight: 300; color: var(--fg-2); }
+.gk-section__subtitle {
+  font-size: var(--fs-md);
+  line-height: var(--lh-loose);
+  color: var(--fg-2);
+  max-width: 52ch;
+}
+@media (max-width: 880px) {
+  .gk-section__head { grid-template-columns: 1fr; gap: var(--space-4); }
+}
+
+/* ── Hero ──────────────────────────────────────────────── */
+.gk-hero {
+  padding: var(--space-10) 0 var(--space-9);
+  border-bottom: 1px solid var(--rule);
+}
+.gk-hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--space-9);
+  align-items: end;
+}
+.gk-hero__eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--space-5);
+}
+.gk-hero__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(48px, 8vw, 96px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: var(--fg);
+}
+.gk-hero__title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent-deep, var(--accent));
+}
+.gk-hero__lede {
+  font-size: var(--fs-lg);
+  line-height: var(--lh-snug);
+  color: var(--fg-2);
+  max-width: 42ch;
+  margin-top: var(--space-6);
+}
+.gk-hero__actions {
+  display: flex; gap: var(--space-3); margin-top: var(--space-7);
+}
+.gk-hero__meta {
+  border-left: 1px solid var(--rule);
+  padding-left: var(--space-6);
+}
+@media (max-width: 880px) {
+  .gk-hero__inner { grid-template-columns: 1fr; }
+  .gk-hero__meta  { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: var(--space-5); }
+}
+
+/* ── Buttons ──────────────────────────────────────────── */
+.gk-cta {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-tight);
+  padding: 12px 22px;
+  background: var(--fg);
+  color: var(--bg);
+  border: 1px solid var(--fg);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.gk-cta:hover { background: var(--accent-deep, var(--accent)); border-color: var(--accent-deep, var(--accent)); color: var(--bg); }
+.gk-cta__arrow { font-family: var(--font-mono); font-size: var(--fs-sm); }
+
+.gk-cta--ghost {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--fg);
+}
+.gk-cta--ghost:hover { background: var(--fg); color: var(--bg); }
+
+.gk-cta--text {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--accent);
+  padding: 4px 0;
+  color: var(--fg);
+  border-radius: 0;
+}
+.gk-cta--text:hover { background: transparent; color: var(--accent-deep, var(--accent)); }
+
+/* Compact CTA — nav buttons, dense toolbars. Same hairline + type, tighter padding. */
+.gk-cta--sm { padding: 8px 14px; font-size: var(--fs-xs); }
+
+/* ── Cards ────────────────────────────────────────────── */
+.gk-card {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: var(--space-6);
+  transition: border-color var(--dur-fast) var(--ease), transform var(--dur-base) var(--ease);
+}
+.gk-card:hover { border-color: var(--fg); }
+.gk-card__num {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-caps);
+  color: var(--accent);
+  margin-bottom: var(--space-4);
+}
+.gk-card__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--fs-xl);
+  line-height: var(--lh-snug);
+  color: var(--fg);
+  margin-bottom: var(--space-3);
+}
+.gk-card__body {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-loose);
+  color: var(--fg-2);
+}
+.gk-card__foot {
+  margin-top: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule-faint, var(--rule));
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
+/* feature trio — number-led, hairline-divided, like the side of a print */
+.gk-feature {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--fg);
+}
+.gk-feature__num {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-caps);
+  color: var(--accent);
+  margin-bottom: var(--space-4);
+}
+.gk-feature__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--fs-xl);
+  line-height: var(--lh-snug);
+  color: var(--fg);
+  margin-bottom: var(--space-3);
+}
+.gk-feature__body {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-loose);
+  color: var(--fg-2);
+  max-width: 38ch;
+}
+
+/* ── Form fields ──────────────────────────────────────── */
+.gk-field {
+  display: flex; flex-direction: column; gap: var(--space-2);
+}
+.gk-field__label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.gk-field__hint {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-xs);
+  color: var(--fg-3);
+}
+.gk-input,
+.gk-select,
+.gk-textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 12px 14px;
+  border-radius: 0;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+.gk-input:focus,
+.gk-select:focus,
+.gk-textarea:focus {
+  outline: 0;
+  border-color: var(--fg);
+  box-shadow: inset 0 -1px 0 var(--accent);
+}
+.gk-textarea { min-height: 96px; resize: vertical; }
+
+/* ── Badges, pips, status ─────────────────────────────── */
+.gk-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-3xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--fg-2);
+  padding: 3px 7px;
+  border: 1px solid var(--rule);
+}
+.gk-badge--solid  { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.gk-badge--accent { color: var(--accent); border-color: var(--accent); }
+.gk-badge--ok     { color: var(--ok); border-color: var(--ok); }
+.gk-badge--warn   { color: var(--warn); border-color: var(--warn); }
+
+.gk-pip {
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.gk-pip--ok   { background: var(--ok); }
+.gk-pip--warn { background: var(--warn); }
+.gk-pip--crit { background: var(--crit); }
+.gk-pip--dim  { background: var(--fg-4); }
+
+/* ── Tabs ─────────────────────────────────────────────── */
+.gk-tabs {
+  display: flex; gap: var(--space-5);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: var(--space-6);
+}
+.gk-tab {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--fg-3);
+  padding: 12px 0;
+  border-bottom: 1px solid transparent;
+  margin-bottom: -1px;
+  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.gk-tab:hover { color: var(--fg-2); }
+.gk-tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+
+/* ── Table (genkan flavour) ───────────────────────────── */
+.gk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+.gk-table th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--fg-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--fg);
+}
+.gk-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+  color: var(--fg);
+}
+.gk-table tr:hover td { background: var(--bg-2); }
+.gk-table .gk-table__num { font-family: var(--font-mono); text-align: right; }
+
+/* ── Empty state ──────────────────────────────────────── */
+.gk-empty {
+  border: 1px dashed var(--rule);
+  padding: var(--space-9);
+  text-align: center;
+}
+.gk-empty__title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--fs-2xl);
+  color: var(--fg);
+  margin-bottom: var(--space-3);
+}
+.gk-empty__body {
+  font-size: var(--fs-sm);
+  color: var(--fg-2);
+  max-width: 44ch;
+  margin: 0 auto var(--space-5);
+  line-height: var(--lh-loose);
+}
+
+/* ── Footer ───────────────────────────────────────────── */
+.gk-footer {
+  border-top: 1px solid var(--fg);
+  padding: var(--space-7) 0 var(--space-6);
+  margin-top: var(--space-9);
+}
+.gk-footer__inner {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--space-7);
+}
+.gk-footer__brand {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-md);
+  letter-spacing: var(--tracking-tight);
+}
+.gk-footer__col h4 {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--fg-3);
+  margin-bottom: var(--space-3);
+}
+.gk-footer__col ul li + li { margin-top: var(--space-2); }
+.gk-footer__col a {
+  font-size: var(--fs-sm);
+  color: var(--fg-2);
+  transition: color var(--dur-fast) var(--ease);
+}
+.gk-footer__col a:hover { color: var(--fg); }
+.gk-footer__rule {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: var(--space-6) 0 var(--space-4);
+}
+.gk-footer__meta {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+@media (max-width: 880px) {
+  .gk-footer__inner { grid-template-columns: 1fr 1fr; }
+}

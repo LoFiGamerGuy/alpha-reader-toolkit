@@ -1,0 +1,523 @@
+/* ============================================================
+   PERSONAL TEMPLATE SYSTEM — TOKENS  ·  v1.1
+   Three registers, one vocabulary.
+
+   SOUL (default)   — warm Japanese craft. Sumi, bone, champagne,
+                      copper, brass, engineered hardwood, forest.
+                      Personal, public-facing, considered objects
+                      one reads or holds.
+
+   GENKAN           — the entry zone between outside and inside.
+                      Soul material applied to a software surface
+                      with cockpit structural discipline. Default
+                      light; dark variant available. Marketing
+                      sites, in-product UI, portfolios, anything
+                      digital but soul-leaning.
+                      Activate: data-register="genkan" (light) or
+                                data-register="genkan" data-mode="dark"
+
+   COCKPIT          — dark modular. Graphite, charcoal, restrained
+                      metallics. Mono-forward. Tooling, agent UIs,
+                      ops, terminals — things one watches.
+                      Activate: class="cockpit"
+
+   Identify the register before making style choices.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+/* ------------------------------------------------------------
+   TYPE STACK NOTE
+   Cormorant Garamond is the considered choice for display:
+   contemporary Garamond revival, elegant italics, pairs cleanly
+   with Inter's geometric humanism. Defensible swaps if revisited:
+     · Source Serif 4 — optical sizes, slightly more neutral
+     · EB Garamond    — quieter, older-feeling, denser texture
+   Cormorant is NOT specifically Japanese; the system is
+   Japanese-influenced craft, not literal Japonisme. The serif
+   carries warmth; the discipline is in restraint, not provenance.
+
+   ACCESSIBILITY: Cormorant is for DISPLAY ONLY. Italic display at
+   ≥28px reads cleanly; do not use it for body text in any register.
+   For data-a11y="strict" surfaces, italic body text is forbidden
+   and Inter is mandatory.
+   ------------------------------------------------------------ */
+
+/* ============================================================
+   SOUL REGISTER (default)
+   sumi ink on bone, with champagne, copper, brass, forest
+
+   Contrast (against --bone #F2EDE3):
+     --sumi    #1A1714  ≈ 14.8 : 1   AAA  (body, headings)
+     --sumi-2  #3A332B  ≈ 10.2 : 1   AAA  (secondary body)
+     --sumi-3  #6B5F4F  ≈  4.9 : 1   AA   (metadata only)
+     --sumi-4  #9C8E78  ≈  2.4 : 1   FAIL (decorative / disabled — never body)
+     --champagne #B89B6E ≈ 2.7 : 1   FAIL (decorative accent — never body)
+     --champagne-deep #8C7044 ≈ 4.1:1 AA-large only
+     --copper  #A85A2C  ≈  4.6 : 1   AA   (small accents, links — borderline)
+     --copper-deep #7C4019 ≈ 7.8 : 1  AAA  (use this for body links)
+     --matsu   #2F4A35  ≈  9.1 : 1   AAA  (status: ok)
+   Use --sumi-4 and --champagne for ornament, never for text the
+   user must read. data-a11y="strict" automatically promotes body
+   text from --sumi-2 to --sumi.
+   ============================================================ */
+:root {
+  /* — Surface — */
+  --bone:        #F2EDE3;   /* primary paper — warm, slightly yellowed */
+  --bone-2:      #E8E1D3;   /* alt section / inset */
+  --bone-3:      #DDD3BF;   /* card surface */
+  --kozo:        #ECE4D2;   /* mulberry-paper accent */
+  --rule:        #C9BEA4;   /* hairlines */
+  --rule-faint:  #DDD3BF;
+
+  /* — Ink — */
+  --sumi:        #1A1714;   /* sumi black — warm near-black, primary text · 14.8:1 vs bone · AAA */
+  --sumi-2:      #3A332B;   /* secondary text · 10.2:1 vs bone · AAA */
+  --sumi-3:      #6B5F4F;   /* tertiary, metadata · 4.9:1 vs bone · AA — NOT for body */
+  --sumi-4:      #9C8E78;   /* disabled, decorative · 2.4:1 vs bone · FAIL — ornament only */
+
+  /* — Metals — */
+  --champagne:   #B89B6E;   /* champagne gold — primary accent · 2.7:1 vs bone · decorative only */
+  --champagne-deep: #8C7044; /* hover / pressed · 4.1:1 vs bone · AA-large only */
+  --champagne-soft: #E8DDC4;
+  --copper:      #A85A2C;   /* copper — secondary accent · 4.6:1 vs bone · AA-borderline */
+  --copper-deep: #7C4019;   /* AAA · safe for body links · 7.8:1 vs bone */
+  --brass:       #9B7E3F;   /* brass — between champagne and copper · ~4.0:1 · accent only */
+
+  /* — Wood / Earth — */
+  --hinoki:      #C9A876;   /* engineered hardwood, light */
+  --keyaki:      #8C6A3F;   /* darker wood */
+  --shou:        #2A211B;   /* shou-sugi-ban charred wood */
+
+  /* — Forest — */
+  --matsu:       #2F4A35;   /* deep pine forest · 9.1:1 vs bone · AAA */
+  --matsu-soft:  #C9D5C5;
+  --moss:        #5C6F47;
+
+  /* — Indigo (genkan secondary, soul tertiary) — */
+  --indigo:      #2A3A5C;   /* muted indigo · 11.4:1 vs bone · AAA */
+  --indigo-soft: #C9D2E0;
+
+  /* — Status (subdued, never gamer) — */
+  --ok:          var(--matsu);
+  --warn:        var(--brass);
+  --info:        var(--indigo);
+  --crit:        var(--copper-deep);
+
+  /* — Type — */
+  --font-display: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Yu Mincho', 'Iowan Old Style', Georgia, serif;
+  --font-body:    'Inter', -apple-system, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Helvetica Neue', sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* — Scale — */
+  --fs-3xs:  10px;
+  --fs-2xs:  11px;
+  --fs-xs:   12px;
+  --fs-sm:   13px;
+  --fs-base: 15px;
+  --fs-md:   17px;
+  --fs-lg:   21px;
+  --fs-xl:   28px;
+  --fs-2xl:  36px;
+  --fs-3xl:  48px;
+  --fs-4xl:  64px;
+  --fs-5xl:  88px;
+  --fs-6xl:  128px;
+  --fs-7xl:  168px;
+
+  --lh-tight:  1.05;
+  --lh-snug:   1.2;
+  --lh-normal: 1.5;
+  --lh-loose:  1.7;
+  --lh-a11y:   1.75;     /* used by data-a11y="strict" */
+
+  --tracking-tightest: -0.03em;
+  --tracking-tight:    -0.015em;
+  --tracking-normal:    0;
+  --tracking-wide:      0.04em;
+  --tracking-caps:      0.16em;
+
+  /* — Spacing — */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+  --space-10: 128px;
+  --space-11: 192px;
+
+  /* — Layout — */
+  --measure:        66ch;
+  --measure-narrow: 50ch;
+  --measure-wide:   84ch;
+
+  /* — Radii — */
+  --r-none: 0;
+  --r-sm:   2px;
+  --r-md:   4px;
+
+  /* — Shadows — */
+  --shadow-soft: 0 2px 12px rgba(26, 23, 20, 0.06);
+  --shadow-lift: 0 12px 36px rgba(26, 23, 20, 0.12);
+
+  /* — Motion — */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 140ms;
+  --dur-base: 240ms;
+  --dur-slow: 480ms;
+
+  /* — Focus ring — defined here so all registers inherit — */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* — Semantic aliases — */
+  --bg:         var(--bone);
+  --bg-2:       var(--bone-2);
+  --bg-3:       var(--bone-3);
+  --fg:         var(--sumi);
+  --fg-2:       var(--sumi-2);
+  --fg-3:       var(--sumi-3);
+  --fg-4:       var(--sumi-4);
+  --accent:     var(--champagne);
+  --accent-2:   var(--copper);
+  --accent-deep:var(--champagne-deep);
+  --accent-soft:var(--champagne-soft);
+  --link:       var(--copper-deep);   /* AAA against bone */
+}
+
+/* ============================================================
+   GENKAN REGISTER · LIGHT (default genkan mode)
+   Soul material on a software surface with cockpit structure.
+   Reuses the soul palette; adjusts aliases for product UI:
+     - link uses copper-deep (AAA against bone)
+     - secondary uses indigo (AAA against bone)
+     - tighter tracking on caps (UI eyebrows ≠ marketing eyebrows)
+
+   Contrast (vs --bone): unchanged from soul.
+   ============================================================ */
+[data-register="genkan"] {
+  /* keep soul palette; tighten UI ergonomics */
+  --tracking-caps:  0.10em;
+  --link:           var(--copper-deep);
+  --accent:         var(--champagne-deep);   /* AA against bone-large; UI uses sumi for body */
+  --accent-2:       var(--indigo);            /* secondary, AAA */
+  --accent-soft:    var(--champagne-soft);
+
+  /* product surfaces want a slightly more inset card */
+  --bg-3:           var(--bone-3);
+
+  /* shadows softer — software, not paper */
+  --shadow-soft: 0 1px 2px rgba(26, 23, 20, 0.04), 0 4px 12px rgba(26, 23, 20, 0.04);
+  --shadow-lift: 0 8px 24px rgba(26, 23, 20, 0.08);
+}
+
+/* ============================================================
+   GENKAN REGISTER · DARK
+   Pulls structural surface from cockpit, keeps warm metals.
+   Contrast (against --graphite #0F1113):
+     --bone     #E8E4DA  ≈ 14.6 : 1   AAA  (body)
+     --bone-2   #B8B2A4  ≈  9.0 : 1   AAA  (secondary)
+     --bone-3   #847E72  ≈  4.7 : 1   AA   (metadata only)
+     --bone-4   #4F4A42  ≈  2.0 : 1   FAIL (decorative)
+     --champagne #C9A878 ≈  8.4 : 1   AAA  (accents and large UI)
+     --copper   #C26A38  ≈  5.3 : 1   AA   (small accents)
+     --ok #6B8A5C ≈ 5.7:1 AA · --info #6B8AA8 ≈ 6.7:1 AAA
+   ============================================================ */
+[data-register="genkan"][data-mode="dark"] {
+  --graphite:    #0F1113;
+  --graphite-2:  #15181B;
+  --graphite-3:  #1C2024;
+  --charcoal:    #24292E;
+  --rule:        #2A2F35;
+  --rule-faint:  #1F2326;
+  --rule-strong: #3A4148;
+
+  --bone:        #E8E4DA;   /* 14.6:1 vs graphite · AAA */
+  --bone-2:      #B8B2A4;   /* 9.0:1 vs graphite · AAA */
+  --bone-3:      #847E72;   /* 4.7:1 vs graphite · AA — metadata only */
+  --bone-4:      #4F4A42;   /* 2.0:1 vs graphite · FAIL — decorative */
+  --sumi:        var(--bone);
+  --sumi-2:      var(--bone-2);
+  --sumi-3:      var(--bone-3);
+  --sumi-4:      var(--bone-4);
+
+  --champagne:      #C9A878;   /* 8.4:1 · AAA */
+  --champagne-deep: #A88955;
+  --champagne-soft: #3A3024;
+  --copper:         #C26A38;   /* 5.3:1 · AA */
+  --brass:          #B0904A;
+  --shou:           #0A0C0E;
+
+  --bg:         var(--graphite);
+  --bg-2:       var(--graphite-2);
+  --bg-3:       var(--graphite-3);
+  --fg:         var(--bone);
+  --fg-2:       var(--bone-2);
+  --fg-3:       var(--bone-3);
+  --fg-4:       var(--bone-4);
+  --accent:     var(--champagne);
+  --accent-2:   var(--copper);
+  --accent-deep:var(--champagne-deep);
+  --accent-soft:var(--champagne-soft);
+  --link:       var(--champagne);
+
+  --ok:    #6B8A5C;
+  --warn:  var(--champagne);
+  --info:  #6B8AA8;
+  --crit:  var(--copper);
+
+  --shadow-soft: 0 1px 0 rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
+  --shadow-lift: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+/* ============================================================
+   VESPER REGISTER
+   The designer's evening prayer. Slow, ritualised, low-light.
+   Aubergine-near-black surface; champagne-deep accent; one
+   pearl-petal white for the held line. Display set in CARDO
+   ITALIC at colossal scale — a slightly more candlelit italic
+   than Cormorant — body in Cormorant Garamond regular at a
+   wide-tracked, breath-cadenced rhythm.
+
+   Vesper is for the ritual artifact: the manifesto, the credo,
+   the evening read of the studio's principles, the chapbook.
+   The opposite tone from Ophelia, same fundamental discipline.
+
+   Activate: data-register="vesper"
+
+   Contrast (against --aubergine #14101A):
+     --bone     #ECE6D6  ≈ 14.5 : 1   AAA   primary text
+     --bone-2   #B8B0A0  ≈  8.3 : 1   AAA   secondary
+     --bone-3   #807868  ≈  4.4 : 1   AA    metadata only
+     --champagne-deep #C9A878 ≈ 8.1:1 AAA   accent (used like gilding)
+     --pearl    #F4ECDC  ≈ 14.9: 1   AAA   the held-note white
+   ============================================================ */
+[data-register="vesper"] {
+  /* — Surface — aubergine near-black, with violet undertone — */
+  --aubergine:    #14101A;
+  --aubergine-2:  #1A1422;
+  --aubergine-3:  #221B2C;
+  --shadow-velvet:#0A0710;
+  --rule:         #2A2436;
+  --rule-faint:   #1F1A2A;
+
+  /* — Bone — */
+  --bone:        #ECE6D6;
+  --bone-2:      #B8B0A0;
+  --bone-3:      #807868;
+  --bone-4:      #4A4438;
+
+  /* — Metals — */
+  --champagne:      #B89B6E;
+  --champagne-deep: #C9A878;   /* AAA — the held accent */
+  --champagne-soft: #2A2014;
+  --brass:          #8C7A4A;
+
+  /* — Pearl — the petal-white reserved for the line that must hold the eye — */
+  --pearl:       #F4ECDC;
+  --pearl-soft:  #C9BBA4;
+
+  /* — Status (never used loud in vesper) — */
+  --ok:    var(--brass);
+  --warn:  var(--champagne);
+  --info:  var(--bone-2);
+  --crit:  var(--champagne-deep);
+
+  /* — Type — Cardo italic for display, Cormorant for body — */
+  --font-display: 'Cardo', 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  --font-body:    'Cormorant Garamond', 'Cardo', 'Iowan Old Style', Georgia, serif;
+
+  /* — Slower than ophelia; ritual cadence — */
+  --dur-fast: 400ms;
+  --dur-base: 800ms;
+  --dur-slow: 1600ms;
+  --ease: cubic-bezier(0.16, 0.84, 0.32, 1);
+
+  --measure:        42ch;
+  --measure-narrow: 30ch;
+
+  --tracking-caps: 0.28em;
+
+  --shadow-soft: 0 2px 24px rgba(0, 0, 0, 0.6);
+  --shadow-lift: 0 24px 96px rgba(0, 0, 0, 0.7);
+
+  /* — Aliases — */
+  --bg:         var(--aubergine);
+  --bg-2:       var(--aubergine-2);
+  --bg-3:       var(--aubergine-3);
+  --fg:         var(--bone);
+  --fg-2:       var(--bone-2);
+  --fg-3:       var(--bone-3);
+  --fg-4:       var(--bone-4);
+  --accent:     var(--champagne-deep);
+  --accent-2:   var(--pearl);
+  --accent-deep:var(--champagne);
+  --accent-soft:var(--champagne-soft);
+  --link:       var(--champagne-deep);
+}
+
+/* ============================================================
+   OPHELIA REGISTER
+   The river that takes her, set in flowers. Wet green-black
+   surface, drowned-rouge accent, a single petal-white for the
+   moments that ask to be seen. Display Cormorant-italic at
+   colossal scale; body in a slow humanist serif at a narrow
+   measure. Single column; long fall.
+
+   This register is for sustained prose objects with a body —
+   manifestos, letters of reckoning, evening reading. Not for
+   product, dashboards, or marketing. The discipline is what
+   holds the page when the subject is unbearable.
+
+   Activate: data-register="ophelia"
+
+   Contrast (against --inkwater #0A1410):
+     --bone     #E8E2D2  ≈ 14.7 : 1   AAA   primary text on river
+     --bone-2   #B8B0A0  ≈  8.4 : 1   AAA   secondary
+     --bone-3   #807868  ≈  4.5 : 1   AA    metadata only
+     --rouge-deep #B83A4C ≈ 4.8 : 1   AA    accent (used like lipstick)
+     --rouge      #8C2535 ≈ 3.5 : 1   AA-large only · ornament
+     --petal      #F4E8D8 ≈ 15.4: 1   AAA   the held-note white
+   ============================================================ */
+[data-register="ophelia"] {
+  /* — Surface — green-black river, with algal cast — */
+  --inkwater:    #0A1410;   /* primary surface · the river */
+  --inkwater-2:  #0E1A14;   /* deeper passage / inset */
+  --inkwater-3:  #142219;   /* card / panel surface */
+  --reed:        #1E3024;   /* a darker forest behind the water */
+  --rule:        #243A2E;
+  --rule-faint:  #1A2B22;
+
+  /* — Bone, drowned slightly — */
+  --bone:        #E8E2D2;   /* 14.7:1 vs inkwater · AAA */
+  --bone-2:      #B8B0A0;   /* 8.4:1 · AAA */
+  --bone-3:      #807868;   /* 4.5:1 · AA · metadata only */
+  --bone-4:      #4A4438;   /* 1.8:1 · FAIL · ornament */
+
+  /* — Rouge — the held note. A red that has been underwater. — */
+  --rouge:       #8C2535;   /* drowned rouge · 3.5:1 · large/decorative only */
+  --rouge-deep:  #B83A4C;   /* the accent that reads · 4.8:1 · AA */
+  --rouge-soft:  #2A1418;   /* a darkened rouge for ground tints */
+
+  /* — Petal — the single pale flower-white. Used rarely. — */
+  --petal:       #F4E8D8;   /* 15.4:1 · AAA · the held-note white */
+  --petal-soft:  #C9BBA4;   /* secondary petal */
+
+  /* — Brass-under-water · a single warm metal tarnished green — */
+  --brass:       #8C7A4A;
+  --moss:        #5C6F47;
+
+  /* — Status (subdued; rouge for crit, brass for warn) — */
+  --ok:    var(--moss);
+  --warn:  var(--brass);
+  --info:  var(--bone-2);
+  --crit:  var(--rouge-deep);
+
+  /* — Type — */
+  /* Ophelia keeps the system stack but uses Cormorant italic at display */
+  /* and Source Serif 4 for body. Fonts loaded by the page that activates */
+  /* this register (see Ophelia.evening.html). */
+  --font-display: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  --font-body:    'Source Serif 4', 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+
+  /* — Slower motion — type animates in like ink in water — */
+  --dur-fast: 320ms;
+  --dur-base: 600ms;
+  --dur-slow: 1200ms;
+  --ease: cubic-bezier(0.16, 0.84, 0.32, 1);
+
+  /* — Layout — narrower measure, more breath — */
+  --measure:        38ch;
+  --measure-narrow: 28ch;
+  --measure-wide:   52ch;
+
+  --tracking-caps: 0.22em;
+
+  --shadow-soft: 0 2px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lift: 0 24px 96px rgba(0, 0, 0, 0.6);
+
+  /* — Aliases — */
+  --bg:         var(--inkwater);
+  --bg-2:       var(--inkwater-2);
+  --bg-3:       var(--inkwater-3);
+  --fg:         var(--bone);
+  --fg-2:       var(--bone-2);
+  --fg-3:       var(--bone-3);
+  --fg-4:       var(--bone-4);
+  --accent:     var(--rouge-deep);
+  --accent-2:   var(--petal);
+  --accent-deep:var(--rouge);
+  --accent-soft:var(--rouge-soft);
+  --link:       var(--rouge-deep);
+}
+
+/* ============================================================
+   COCKPIT REGISTER
+   graphite + charcoal, restrained metallic accents,
+   monospace-forward, status indicators, modular panels
+
+   Contrast (against --graphite #0F1113):
+     --bone   #E8E4DA  ≈ 14.6 : 1   AAA
+     --bone-2 #B8B2A4  ≈  9.0 : 1   AAA
+     --bone-3 #847E72  ≈  4.7 : 1   AA  · metadata only
+     --bone-4 #4F4A42  ≈  2.0 : 1   FAIL · decorative only
+     --champagne #C9A878 ≈ 8.4:1 AAA
+     --ok #6B8A5C 5.7:1 AA · --info #6B8AA8 6.7:1 AAA · --crit #C26A38 5.3:1 AA
+   ============================================================ */
+.cockpit, [data-register="cockpit"] {
+  --graphite:    #0F1113;
+  --graphite-2:  #15181B;
+  --graphite-3:  #1C2024;
+  --charcoal:    #24292E;
+  --charcoal-2:  #2E343A;
+  --rule:        #2A2F35;
+  --rule-faint:  #1F2326;
+  --rule-strong: #3A4148;
+
+  --bone:        #E8E4DA;
+  --bone-2:      #B8B2A4;
+  --bone-3:      #847E72;
+  --bone-4:      #4F4A42;
+  --sumi:        var(--bone);
+  --sumi-2:      var(--bone-2);
+  --sumi-3:      var(--bone-3);
+  --sumi-4:      var(--bone-4);
+
+  --champagne:   #C9A878;
+  --champagne-deep: #A88955;
+  --champagne-soft: #3A3024;
+  --copper:      #C26A38;
+  --brass:       #B0904A;
+
+  --ok:          #6B8A5C;
+  --warn:        #C9A878;
+  --info:        #6B8AA8;
+  --crit:        #C26A38;
+
+  --font-display: 'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+  --font-body:    'Inter', -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  --tracking-caps: 0.10em;
+  --r-md: 2px;
+
+  --shadow-soft: 0 1px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  --shadow-lift: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+  --bg:         var(--graphite);
+  --bg-2:       var(--graphite-2);
+  --bg-3:       var(--graphite-3);
+  --fg:         var(--bone);
+  --fg-2:       var(--bone-2);
+  --fg-3:       var(--bone-3);
+  --fg-4:       var(--bone-4);
+  --accent:     var(--champagne);
+  --accent-2:   var(--copper);
+  --accent-deep:var(--champagne-deep);
+  --accent-soft:var(--champagne-soft);
+  --link:       var(--champagne);
+}

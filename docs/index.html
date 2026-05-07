@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en" data-register="genkan">
+<head>
+<meta charset="utf-8">
+<title>Alpha-Reader Toolkit — honest fiction critique from LLM personas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A pipeline for getting honest alpha-reader feedback on a fiction manuscript using LLM personas, with structural anti-sycophancy bindings.">
+<link rel="stylesheet" href="css/genkan.css">
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "7fcba264810c47d0b53cdf09f5becdcc"}'></script>
+<style>
+  .fo-masthead { border-top: 3px solid var(--fg); border-bottom: 1px solid var(--rule); padding: var(--space-5) 0; }
+  .fo-masthead__inner { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-5); }
+  .fo-masthead__brand { font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: var(--fs-md); color: var(--fg); }
+  .fo-masthead__brand .glyph { font-family: var(--font-mono); font-style: normal; font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); color: var(--accent); border: 1px solid var(--accent); padding: 2px 6px; margin-right: var(--space-3); }
+  .fo-masthead__meta { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--fg-3); }
+  .fo-masthead__meta b { color: var(--fg); font-weight: 400; }
+  .fo-title-block { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-9); align-items: end; padding: var(--space-9) 0 var(--space-8); border-bottom: 1px solid var(--rule); }
+  .fo-title { font-family: var(--font-display); font-weight: 400; font-size: clamp(48px, 7vw, 88px); line-height: 0.98; letter-spacing: -0.025em; color: var(--fg); }
+  .fo-title em { font-style: italic; font-weight: 300; color: var(--accent-deep); }
+  .fo-title-block__lede { font-family: var(--font-display); font-style: italic; font-size: var(--fs-lg); line-height: 1.45; color: var(--fg-2); border-left: 1px solid var(--accent); padding-left: var(--space-5); }
+  @media (max-width: 880px) { .fo-title-block { grid-template-columns: 1fr; } }
+  .fo-shelf { padding: var(--space-9) 0 var(--space-7); border-bottom: 1px solid var(--rule); }
+  .fo-shelf__head { display: grid; grid-template-columns: 80px 1fr; gap: var(--space-6); align-items: baseline; margin-bottom: var(--space-6); padding-bottom: var(--space-5); border-bottom: 1px solid var(--fg); }
+  .fo-shelf__num { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--accent); }
+  .fo-shelf__title { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-2xl); line-height: 1.05; letter-spacing: var(--tracking-tight); color: var(--fg); }
+  .fo-shelf__title em { font-style: italic; font-weight: 300; color: var(--fg-2); }
+  .fo-shelf__intro { font-family: var(--font-display); font-style: italic; font-size: var(--fs-md); line-height: 1.6; color: var(--fg-2); max-width: 56ch; margin-bottom: var(--space-6); }
+  .fo-entry { display: grid; grid-template-columns: 60px minmax(0, 3fr) minmax(0, 5fr) auto; gap: var(--space-6); padding: var(--space-6) 0; border-bottom: 1px solid var(--rule-faint); transition: background var(--dur-fast) var(--ease); }
+  .fo-entry:hover { background: var(--bg-2); }
+  .fo-entry__num { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); color: var(--accent); }
+  .fo-entry__title { font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: var(--fs-xl); line-height: 1.15; color: var(--fg); margin-bottom: var(--space-2); }
+  .fo-entry__title a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; }
+  .fo-entry__title a:hover { border-bottom-color: var(--accent); }
+  .fo-entry__bibl { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--fg-3); }
+  .fo-entry__note { font-family: var(--font-body); font-size: var(--fs-sm); line-height: 1.65; color: var(--fg-2); text-wrap: pretty; max-width: 56ch; }
+  .fo-entry__meta { text-align: right; font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--fg-3); line-height: 1.7; }
+  .fo-entry__meta .tag { border: 1px solid var(--rule); padding: 2px 6px; margin-bottom: var(--space-2); display: inline-block; color: var(--fg-2); }
+  .fo-entry__meta .tag--key { color: var(--accent); border-color: var(--accent); }
+  @media (max-width: 880px) { .fo-entry { grid-template-columns: 40px 1fr; } .fo-entry__note, .fo-entry__meta { grid-column: 2; } .fo-entry__meta { text-align: left; } }
+  .fo-feature { background: var(--bg-2); padding: var(--space-8); margin: var(--space-7) 0; border-top: 1px solid var(--accent); border-bottom: 1px solid var(--accent); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--space-7); align-items: start; }
+  .fo-feature__cap { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--accent); margin-bottom: var(--space-4); }
+  .fo-feature__title { font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: var(--fs-3xl); line-height: 0.98; letter-spacing: -0.02em; color: var(--fg); margin-bottom: var(--space-4); }
+  .fo-feature__pull { font-family: var(--font-display); font-style: italic; font-size: var(--fs-lg); line-height: 1.4; color: var(--fg); border-left: 2px solid var(--accent); padding-left: var(--space-5); margin-bottom: var(--space-5); }
+  .fo-feature__note { font-size: var(--fs-sm); line-height: 1.7; color: var(--fg-2); }
+  .fo-feature__note a { color: var(--fg); border-bottom: 1px solid var(--accent); text-decoration: none; }
+  @media (max-width: 880px) { .fo-feature { grid-template-columns: 1fr; padding: var(--space-6); } }
+  .fo-colophon { border-top: 3px solid var(--fg); padding: var(--space-7) 0; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-7); margin-top: var(--space-8); }
+  .fo-colophon h5 { font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--accent); margin-bottom: var(--space-3); }
+  .fo-colophon p { font-size: var(--fs-sm); line-height: 1.65; color: var(--fg-2); }
+  .fo-colophon a { color: var(--fg); border-bottom: 1px solid var(--accent); text-decoration: none; }
+  .fo-colophon ul li { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--fg-2); line-height: 1.9; border-bottom: 1px dotted var(--rule); padding: 4px 0; display: flex; justify-content: space-between; }
+  .fo-colophon ul li b { color: var(--fg); font-weight: 400; }
+  @media (max-width: 880px) { .fo-colophon { grid-template-columns: 1fr; } }
+  .fo-feedback { border-top: 1px solid var(--rule); padding: var(--space-9) 0 var(--space-7); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: var(--space-7); }
+  .fo-feedback__head h3 { font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: var(--fs-2xl); line-height: 1.05; letter-spacing: var(--tracking-tight); color: var(--fg); margin-bottom: var(--space-4); }
+  .fo-feedback__head .fo-feedback__cap { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--accent); margin-bottom: var(--space-3); }
+  .fo-feedback__head p { font-size: var(--fs-sm); line-height: 1.65; color: var(--fg-2); margin-bottom: var(--space-3); }
+  .fo-feedback__head a { color: var(--fg); border-bottom: 1px solid var(--accent); text-decoration: none; }
+  .fo-feedback form { display: flex; flex-direction: column; gap: var(--space-4); }
+  .fo-feedback label { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--fg-3); display: block; margin-bottom: var(--space-2); }
+  .fo-feedback input, .fo-feedback textarea { font-family: var(--font-body); font-size: var(--fs-sm); color: var(--fg); background: var(--bg); border: 1px solid var(--rule); padding: var(--space-3) var(--space-4); width: 100%; box-sizing: border-box; transition: border-color var(--dur-fast) var(--ease); }
+  .fo-feedback input:focus, .fo-feedback textarea:focus { outline: none; border-color: var(--accent); }
+  .fo-feedback textarea { resize: vertical; min-height: 100px; font-family: var(--font-body); line-height: 1.55; }
+  .fo-feedback button { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; background: var(--fg); color: var(--bg); border: none; padding: var(--space-3) var(--space-5); cursor: pointer; align-self: flex-start; transition: background var(--dur-fast) var(--ease); }
+  .fo-feedback button:hover { background: var(--accent-deep); }
+  @media (max-width: 880px) { .fo-feedback { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="gk-shell">
+
+  <header class="gk-container fo-masthead">
+    <div class="fo-masthead__inner">
+      <div class="fo-masthead__brand"><span class="glyph">読</span>Alpha-Reader Toolkit · the catalogue</div>
+      <div class="fo-masthead__meta"><b>v1.0</b> · <b>May 2026</b> · <b>MIT</b></div>
+    </div>
+  </header>
+
+  <main class="gk-container">
+
+    <section class="fo-title-block">
+      <h1 class="fo-title">Honest critique <em>from LLM personas</em>, despite the training.</h1>
+      <p class="fo-title-block__lede">
+        A Python pipeline for getting alpha-reader feedback on a fiction manuscript that pushes past RLHF sycophancy. Anti-sycophancy bindings, two-pass design, multi-model dispatch, reflexive Opus self-critique. ~$8-25 per full novel.
+      </p>
+    </section>
+
+    <section class="fo-feature">
+      <div>
+        <div class="fo-feature__cap">— start here</div>
+        <h2 class="fo-feature__title">Read the methodology first.</h2>
+        <p class="fo-feature__pull">"v1 produced 7/7 keep-reading verdicts on a manuscript that needed serious rework. v0.4 rebuilds the cohort to push past that."</p>
+      </div>
+      <div>
+        <p class="fo-feature__note">Read <a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/METHODOLOGY.md"><b>METHODOLOGY.md</b></a> for the four mechanisms (anti-sycophancy bindings, two-pass design, reflexive self-critique, multi-model dispatch). Then <a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/references/personas-snapshot-v0.4.md"><b>the personas snapshot</b></a> for the 9-persona cohort and the 10 universal anti-sycophancy bindings. Then run <a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/new-splinter.py"><b>new-splinter.py</b></a> on a test manuscript.</p>
+      </div>
+    </section>
+
+    <!-- The Pipeline -->
+    <section class="fo-shelf">
+      <div class="fo-shelf__head">
+        <div class="fo-shelf__num">— I</div>
+        <h3 class="fo-shelf__title">The Pipeline <em>— scaffolder + orchestrator + analyzer</em></h3>
+      </div>
+      <p class="fo-shelf__intro">Three Python scripts plus a scaffolder that turns "I have a manuscript" into "ready to fire" in ~2 minutes.</p>
+
+      <div class="fo-entry">
+        <div class="fo-entry__num">1.1</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/new-splinter.py">new-splinter.py</a></div>
+          <div class="fo-entry__bibl">Scaffolder · ~2 minutes from manuscript to ready</div>
+        </div>
+        <div class="fo-entry__note">One command: converts manuscript (.docx → .md), generates book_config.yaml + CLAUDE.md + kickoff, copies orchestrator + analyzer + auth_probe + personas, optionally sources API key, runs readability analyzer.</div>
+        <div class="fo-entry__meta"><span class="tag tag--key">Start here</span></div>
+      </div>
+      <div class="fo-entry">
+        <div class="fo-entry__num">1.2</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/orchestrator/run-alpha-reader.py">run-alpha-reader.py</a></div>
+          <div class="fo-entry__bibl">Canonical orchestrator · 1072 lines · reads book_config.yaml</div>
+        </div>
+        <div class="fo-entry__note">Runs personas across passes with anti-sycophancy bindings, multi-model dispatch (Sonnet for most, Opus for adversarial + audit), reflexive self-critique, atomic state for resume.</div>
+        <div class="fo-entry__meta"><span class="tag tag--key">Core</span></div>
+      </div>
+      <div class="fo-entry">
+        <div class="fo-entry__num">1.3</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/orchestrator/readability_analyzer.py">readability_analyzer.py</a></div>
+          <div class="fo-entry__bibl">textstat metrics panel</div>
+        </div>
+        <div class="fo-entry__note">Per-chapter and whole-book readability stats (FK, FRE, sentence/word/syllable averages). Output feeds into per-persona symmetric FK guard binding.</div>
+        <div class="fo-entry__meta"><span class="tag">Analysis</span></div>
+      </div>
+      <div class="fo-entry">
+        <div class="fo-entry__num">1.4</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/orchestrator/auth_probe.py">auth_probe.py</a></div>
+          <div class="fo-entry__bibl">Verify API key pre-fire</div>
+        </div>
+        <div class="fo-entry__note">~30-line script that does a single low-cost API call to confirm the loaded key works. Run before firing 9 personas across 2 passes.</div>
+        <div class="fo-entry__meta"><span class="tag">Safety</span></div>
+      </div>
+      <div class="fo-entry">
+        <div class="fo-entry__num">1.5</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/install-into-existing-splinter.sh">install-into-existing-splinter.sh</a></div>
+          <div class="fo-entry__bibl">Refresh toolkit in existing project (.sh + .ps1)</div>
+        </div>
+        <div class="fo-entry__note">Brings an existing project up to current toolkit version. Replaces orchestrator/personas without touching manuscript/runs/book_config.</div>
+        <div class="fo-entry__meta"><span class="tag">Maintenance</span></div>
+      </div>
+    </section>
+
+    <!-- Methodology -->
+    <section class="fo-shelf">
+      <div class="fo-shelf__head">
+        <div class="fo-shelf__num">— II</div>
+        <h3 class="fo-shelf__title">Methodology <em>— how the pipeline pushes past sycophancy</em></h3>
+      </div>
+      <p class="fo-shelf__intro">Four overlapping mechanisms. Each is partial alone; together they produce noticeably more honest output.</p>
+
+      <div class="fo-entry">
+        <div class="fo-entry__num">2.1</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/METHODOLOGY.md">METHODOLOGY.md</a></div>
+          <div class="fo-entry__bibl">The full read</div>
+        </div>
+        <div class="fo-entry__note">All four mechanisms (anti-sycophancy bindings, two-pass design, reflexive self-critique, multi-model dispatch). When to use, when not to. Honest limits.</div>
+        <div class="fo-entry__meta"><span class="tag tag--key">Foundation</span></div>
+      </div>
+      <div class="fo-entry">
+        <div class="fo-entry__num">2.2</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/references/personas-snapshot-v0.4.md">9-persona snapshot</a></div>
+          <div class="fo-entry__bibl">Anti-sycophancy preamble + persona profiles</div>
+        </div>
+        <div class="fo-entry__note">The 10 universal bindings (rating discipline, no hedging, DNF honesty, no conversion arcs, no warmth padding, forced negative generation Q0, mandatory 1-star Q9, comp ranking, distribution prediction, authority-relationship inversion). 7 lane-specific personas + 2 adversarial (Veronica, Emma).</div>
+        <div class="fo-entry__meta"><span class="tag tag--key">Load-bearing</span></div>
+      </div>
+    </section>
+
+    <!-- Templates -->
+    <section class="fo-shelf">
+      <div class="fo-shelf__head">
+        <div class="fo-shelf__num">— III</div>
+        <h3 class="fo-shelf__title">Templates <em>— per-project scaffolds</em></h3>
+      </div>
+      <p class="fo-shelf__intro">The scaffolder generates these for new projects. Reference copies for existing projects or manual setup.</p>
+
+      <div class="fo-entry">
+        <div class="fo-entry__num">3.1</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/templates/book_config.yaml.template">book_config.yaml</a></div>
+          <div class="fo-entry__bibl">Per-project config schema</div>
+        </div>
+        <div class="fo-entry__note">Load-bearing — orchestrator reads from this. Defines book metadata, manuscript path, genre context, cost cap, model defaults, optional Pass B reference files.</div>
+        <div class="fo-entry__meta"><span class="tag tag--key">Required</span></div>
+      </div>
+      <div class="fo-entry">
+        <div class="fo-entry__num">3.2</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/templates/splinter-CLAUDE.md.template">CLAUDE.md template</a></div>
+          <div class="fo-entry__bibl">Per-project Claude Code context</div>
+        </div>
+        <div class="fo-entry__note">Project-scoped configuration: cost discipline, fire commands, persona roster, hard rules. Generated by scaffolder; customize per project.</div>
+        <div class="fo-entry__meta"><span class="tag">Template</span></div>
+      </div>
+      <div class="fo-entry">
+        <div class="fo-entry__num">3.3</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/templates/splinter-kickoff.md.template">Kickoff template</a></div>
+          <div class="fo-entry__bibl">Project kickoff document</div>
+        </div>
+        <div class="fo-entry__note">Authorization-gate document with pipeline architecture, fire commands, pre-fire checklist, post-fire deliverables list.</div>
+        <div class="fo-entry__meta"><span class="tag">Template</span></div>
+      </div>
+      <div class="fo-entry">
+        <div class="fo-entry__num">3.4</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/templates/.env.example">.env.example</a></div>
+          <div class="fo-entry__bibl">API key template</div>
+        </div>
+        <div class="fo-entry__note">Note: the .env loader uses python-dotenv with override=True to bypass session-injected Claude Code tokens that fail on direct API calls.</div>
+        <div class="fo-entry__meta"><span class="tag">Template</span></div>
+      </div>
+      <div class="fo-entry">
+        <div class="fo-entry__num">3.5</div>
+        <div>
+          <div class="fo-entry__title"><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/templates/.gitignore.template">.gitignore template</a></div>
+          <div class="fo-entry__bibl">Defensive gitignore</div>
+        </div>
+        <div class="fo-entry__note">Excludes .env, runs/ (sensitive: contains critique of unpublished manuscript), Python build artifacts.</div>
+        <div class="fo-entry__meta"><span class="tag">Template</span></div>
+      </div>
+    </section>
+
+    <!-- Feedback -->
+    <section class="fo-feedback">
+      <div class="fo-feedback__head">
+        <div class="fo-feedback__cap">— for non-github readers</div>
+        <h3>Send a quick note.</h3>
+        <p>Used the toolkit on your own manuscript? Hit a problem with the pipeline? Have findings on calibration vs human alpha readers? This form goes straight to the maintainer.</p>
+        <p>If you have a GitHub account, <a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/issues/new">opening an issue</a> is preferred. This form is the path for everyone else.</p>
+      </div>
+      <form action="https://formspree.io/f/xnjwzzew" method="POST">
+        <div>
+          <label for="fb-name">Your name (optional)</label>
+          <input id="fb-name" type="text" name="name">
+        </div>
+        <div>
+          <label for="fb-email">Your email (optional, for reply)</label>
+          <input id="fb-email" type="email" name="email">
+        </div>
+        <input type="hidden" name="_subject" value="Alpha-Reader Toolkit — feedback">
+        <div>
+          <label for="fb-message">Message</label>
+          <textarea id="fb-message" name="message" required></textarea>
+        </div>
+        <button type="submit">Send →</button>
+      </form>
+    </section>
+
+    <footer class="fo-colophon">
+      <div>
+        <h5>About</h5>
+        <p>Designed and built by Ryan Gosnell. Distilled from running the methodology on a real novel; empirical findings on whether anti-sycophancy bindings reduce vs eliminate sycophancy continue to develop.</p>
+        <p style="margin-top: var(--space-3);">Source on GitHub. <a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit">Repo README →</a></p>
+        <p style="margin-top: var(--space-3);"><b>Related public repos:</b></p>
+        <ul style="margin-top: var(--space-2);">
+          <li><a href="https://lofigamerguy.github.io/share-ai-engineering-patterns/">share-ai-engineering-patterns</a></li>
+          <li><a href="https://lofigamerguy.github.io/council-of-five/">council-of-five</a></li>
+          <li><a href="https://lofigamerguy.github.io/reference-library-methodology/">reference-library-methodology</a></li>
+          <li><a href="https://lofigamerguy.github.io/cross-platform-ai-dev-env-playbook/">cross-platform-ai-dev-env-playbook</a></li>
+          <li><a href="https://lofigamerguy.github.io/five-register-design-system/">five-register-design-system</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>License</h5>
+        <p><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/LICENSE">MIT</a> — use freely, attribute when you can.</p>
+      </div>
+      <div>
+        <h5>Quick links</h5>
+        <ul>
+          <li><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/README.md">README</a> <b>MD</b></li>
+          <li><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/METHODOLOGY.md">Methodology</a> <b>MD</b></li>
+          <li><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/CONTRIBUTING.md">Contributing</a> <b>MD</b></li>
+          <li><a href="https://github.com/LoFiGamerGuy/alpha-reader-toolkit/blob/main/CHANGELOG.md">Changelog</a> <b>MD</b></li>
+        </ul>
+      </div>
+    </footer>
+
+  </main>
+
+</div>
+
+</body>
+</html>
