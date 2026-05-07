@@ -186,6 +186,7 @@ This toolkit is part of a small family of public reference material on agentic e
 - **[council-of-five](https://github.com/LoFiGamerGuy/council-of-five)** &middot; [live →](https://lofigamerguy.github.io/council-of-five/) — Multi-perspective decision framework. The persona-rotation pattern in this toolkit is a domain-specific application of council-style structured deliberation. CC BY 4.0.
 - **[reference-library-methodology](https://github.com/LoFiGamerGuy/reference-library-methodology)** &middot; [live →](https://lofigamerguy.github.io/reference-library-methodology/) — System for building a queryable, AI-readable technical reference library. MIT.
 - **[five-register-design-system](https://github.com/LoFiGamerGuy/five-register-design-system)** &middot; [live gallery →](https://lofigamerguy.github.io/five-register-design-system/) — Design system. MIT.
+- **[cross-platform-ai-dev-env-playbook](https://github.com/LoFiGamerGuy/cross-platform-ai-dev-env-playbook)** &middot; [live →](https://lofigamerguy.github.io/cross-platform-ai-dev-env-playbook/) — Concrete operational playbook for cross-platform agentic AI dev environments. CC BY 4.0.
 - **[terminal-stack](https://github.com/LoFiGamerGuy/terminal-stack)** — Opinionated terminal kit for Git Bash on Windows.
 - **[dotfiles](https://github.com/LoFiGamerGuy/dotfiles)** — Personal dotfiles.
 
